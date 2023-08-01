@@ -8,10 +8,13 @@ import (
 
 	"api/src/controllers"
 	"api/src/db"
+	"api/src/middlewares"
 )
 
 func initializeRouter() {
 	r := mux.NewRouter()
+
+	r.Use(middlewares.JsonMiddleware)
 
 	r.HandleFunc("/users", controllers.GetUsers).Methods("GET")
 	r.HandleFunc("/users/{id}", controllers.GetUser).Methods("GET")

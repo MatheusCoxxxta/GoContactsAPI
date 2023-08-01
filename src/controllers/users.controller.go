@@ -13,7 +13,6 @@ import (
 )
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 
 	users := usecases.GetUsers([]models.User{})
 
@@ -21,7 +20,6 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 
 	user, err := usecases.GetUser(models.User{}, params["id"])
@@ -36,7 +34,6 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	var user models.User
 	json.NewDecoder(r.Body).Decode(&user)
 
@@ -48,7 +45,6 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 // TODO: refactor UpdateUser to use an usecase.UpdateUser
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 
 	var user models.User
@@ -68,7 +64,6 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 
 	var user models.User
