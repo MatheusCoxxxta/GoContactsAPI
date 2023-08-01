@@ -7,8 +7,13 @@ import (
 	"api/src/models"
 )
 
-func GetUsers(users *[]models.User) {
-	db.CONNECTION.Preload("Contact").Find(&users)
+// Refactored function using immutability
+func GetUsers(users []models.User) (u []models.User) {
+
+	u = make([]models.User, 0)
+	db.CONNECTION.Preload("Contact").Find(&u)
+
+	return
 }
 
 func GetUser(user *models.User, id string) (err error) {

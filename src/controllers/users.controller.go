@@ -15,8 +15,7 @@ import (
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	var users []models.User
-	usecases.GetUsers(&users)
+	users := usecases.GetUsers([]models.User{})
 
 	json.NewEncoder(w).Encode(users)
 }
