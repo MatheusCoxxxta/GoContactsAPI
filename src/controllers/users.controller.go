@@ -24,9 +24,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 
-	var user models.User
-
-	err := usecases.GetUser(&user, params["id"])
+	user, err := usecases.GetUser(models.User{}, params["id"])
 
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)

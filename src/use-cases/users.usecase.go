@@ -7,7 +7,6 @@ import (
 	"api/src/models"
 )
 
-// Refactored function using immutability
 func GetUsers(users []models.User) (u []models.User) {
 
 	u = make([]models.User, 0)
@@ -16,11 +15,13 @@ func GetUsers(users []models.User) (u []models.User) {
 	return
 }
 
-func GetUser(user *models.User, id string) (err error) {
-	result := db.CONNECTION.Preload("Contact").First(&user, id)
+func GetUser(user models.User, id string) (u models.User, err error) {
+	u = user
 
-	if result.Error != nil {
-		err = result.Error
+	exec := db.CONNECTION.Preload("Contact").First(&u, id)
+
+	if exec.Error != nil {
+		err = exec.Error
 	}
 
 	return
