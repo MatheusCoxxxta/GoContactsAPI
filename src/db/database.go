@@ -16,6 +16,7 @@ const DNS = "root:password@tcp(127.0.0.1:3309)/contacts?charset=utf8mb4&parseTim
 
 type Contact Models.Contact
 type User Models.User
+type GithubAccount Models.GithubAccount
 
 func InitializeDatabase() {
 	CONNECTION, err = gorm.Open(mysql.Open(DNS), &gorm.Config{})
@@ -24,6 +25,6 @@ func InitializeDatabase() {
 		fmt.Println(err.Error())
 		fmt.Println("Not initialized")
 	}
-	CONNECTION.AutoMigrate(&User{}, &Contact{})
+	CONNECTION.AutoMigrate(&User{}, &Contact{}, GithubAccount{})
 	fmt.Println("Migrated successfully...")
 }
