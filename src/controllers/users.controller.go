@@ -14,7 +14,7 @@ import (
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 
-	users := usecases.GetUsers([]models.User{})
+	users := usecases.GetUsers()
 
 	json.NewEncoder(w).Encode(users)
 }
@@ -22,7 +22,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
-	user, err := usecases.GetUser(models.User{}, params["id"])
+	user, err := usecases.GetUser(params["id"])
 
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
@@ -37,9 +37,9 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	json.NewDecoder(r.Body).Decode(&user)
 
-	usecases.CreateUser(&user)
+	u := usecases.CreateUser(user)
 
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(u)
 }
 
 // TODO: refactor UpdateUser to use an usecase.UpdateUser
@@ -66,8 +66,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
-	var user models.User
-	err := usecases.DeleteUser(&user, params["id"])
+	err := usecases.DeleteUser(params["id"])
 
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)

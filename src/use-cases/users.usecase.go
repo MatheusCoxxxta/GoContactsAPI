@@ -7,7 +7,7 @@ import (
 	"api/src/models"
 )
 
-func GetUsers(users []models.User) (u []models.User) {
+func GetUsers() (u []models.User) {
 
 	u = make([]models.User, 0)
 	db.CONNECTION.Preload("Contact").Find(&u)
@@ -15,35 +15,41 @@ func GetUsers(users []models.User) (u []models.User) {
 	return
 }
 
-func GetUser(user models.User, id string) (u models.User, err error) {
-	u = user
+func GetUser(id string) (u models.User, err error) {
+	u = models.User{}
 
-	exec := db.CONNECTION.Preload("Contact").First(&u, id)
+	result := db.CONNECTION.Preload("Contact").First(&u, id)
 
-	if exec.Error != nil {
-		err = exec.Error
+	if result.Error != nil {
+		err = result.Error
 	}
 
 	return
 }
 
-func CreateUser(user *models.User) {
-	db.CONNECTION.Create(&user)
+func CreateUser(user models.User) (u models.User) {
+
+	u = user
+	db.CONNECTION.Create(&u)
+
+	return
 }
 
 func UpdateUser() {
 	fmt.Println("Not implemented")
 }
 
-func DeleteUser(user *models.User, id string) (err error) {
-	result := db.CONNECTION.First(&user, id)
+func DeleteUser(id string) (err error) {
+	u := models.User{}
+
+	result := db.CONNECTION.First(&u, id)
 
 	if result.Error != nil {
 		err = result.Error
 		return
 	}
 
-	db.CONNECTION.Delete(&user, id)
+	db.CONNECTION.Delete(&u, id)
 
 	return
 }
