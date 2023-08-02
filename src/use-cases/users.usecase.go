@@ -3,6 +3,8 @@ package usecases
 import (
 	"fmt"
 
+	mp "github.com/geraldo-labs/merge-struct"
+
 	"api/src/db"
 	"api/src/models"
 )
@@ -35,8 +37,25 @@ func CreateUser(user models.User) (u models.User) {
 	return
 }
 
-func UpdateUser() {
-	fmt.Println("Not implemented")
+func UpdateUser(id string, modified models.User) (u models.User) {
+
+	result := db.CONNECTION.First(&u, id)
+
+	if result.Error != nil {
+		fmt.Println(result.Error.Error())
+		return
+	}
+
+	_, err := mp.Struct(&u, modified)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	db.CONNECTION.Save(&u)
+
+	return
 }
 
 func DeleteUser(id string) (err error) {

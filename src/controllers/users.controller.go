@@ -2,12 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
 
-	"api/src/db"
 	"api/src/models"
 	usecases "api/src/use-cases"
 )
@@ -47,20 +45,12 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
-	var user models.User
+	var bodyUser models.User
+	json.NewDecoder(r.Body).Decode(&bodyUser)
 
-	result := db.CONNECTION.First(&user, params["id"])
+	modified := usecases.UpdateUser(params["id"], bodyUser)
 
-	if result.Error != nil {
-		fmt.Println(result.Error.Error())
-		return
-	}
-
-	json.NewDecoder(r.Body).Decode(&user)
-
-	db.CONNECTION.Save(&user)
-
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(modified)
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
