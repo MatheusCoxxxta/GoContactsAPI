@@ -2,32 +2,24 @@ package usecases
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	mp "github.com/geraldo-labs/merge-struct"
 
-	"api/src/db"
 	"api/src/models"
+	"api/src/repositories"
 )
 
-func GetUsers() (u []models.User) {
+func GetUsers() []models.User {
 
-	u = make([]models.User, 0)
-	db.CONNECTION.Preload("Contact").Find(&u)
+	return repositories.List()
 
-	return
 }
 
 func GetUser(id string) (u models.User, err error) {
-	u = models.User{}
 
-	result := db.CONNECTION.Preload("Contact").Preload("GithubAccount").First(&u, id)
-
-	if result.Error != nil {
-		err = result.Error
-	}
+	u, err = repositories.FindById(id)
 
 	return
 }
@@ -44,44 +36,32 @@ func CreateUser(user models.User) (u models.User) {
 
 	user.GithubAccount = githubAccount
 
-	u = user
-	db.CONNECTION.Create(&u)
+	u = repositories.Create(user)
 
 	return
 }
 
-func UpdateUser(id string, modified models.User) (u models.User) {
+func UpdateUser(id string, modified models.User) (u models.User, err error) {
 
-	result := db.CONNECTION.First(&u, id)
+	u, repoErr := repositories.FindById(id)
 
-	if result.Error != nil {
-		fmt.Println(result.Error.Error())
+	if repoErr != nil {
+		err = repoErr
 		return
 	}
 
-	_, err := mp.Struct(&u, modified)
+	_, err = mp.Struct(&u, modified)
 
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	db.CONNECTION.Save(&u)
+	repositories.Update(u)
 
 	return
 }
 
 func DeleteUser(id string) (err error) {
-	u := models.User{}
 
-	result := db.CONNECTION.First(&u, id)
+	u, err := repositories.FindById(id)
 
-	if result.Error != nil {
-		err = result.Error
-		return
-	}
-
-	db.CONNECTION.Delete(&u, id)
+	repositories.Delete(u, id)
 
 	return
 }
