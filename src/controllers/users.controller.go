@@ -46,7 +46,12 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	var bodyUser models.User
 	json.NewDecoder(r.Body).Decode(&bodyUser)
 
-	modified := usecases.UpdateUser(params["id"], bodyUser)
+	modified, err := usecases.UpdateUser(params["id"], bodyUser)
+
+	if err != nil {
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
 
 	json.NewEncoder(w).Encode(modified)
 }
