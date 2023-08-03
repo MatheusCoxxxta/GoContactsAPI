@@ -8,7 +8,7 @@ import (
 func List() []models.User {
 
 	u := make([]models.User, 0)
-	db.CONNECTION.Preload("Contact").Find(&u)
+	db.CONNECTION.Preload("GithubAccount").Preload("Contact").Find(&u)
 
 	return u
 }

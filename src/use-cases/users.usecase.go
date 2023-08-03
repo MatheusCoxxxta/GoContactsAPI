@@ -1,12 +1,9 @@
 package usecases
 
 import (
-	"encoding/json"
-	"io/ioutil"
-	"net/http"
-
 	mp "github.com/geraldo-labs/merge-struct"
 
+	"api/src/controllers/providers"
 	"api/src/models"
 	"api/src/repositories"
 )
@@ -26,13 +23,7 @@ func GetUser(id string) (u models.User, err error) {
 
 func CreateUser(user models.User) (u models.User) {
 
-	url := "https://api.github.com/users/" + user.GithubUsername
-	response, _ := http.Get(url)
-
-	responseBytes, _ := ioutil.ReadAll(response.Body)
-
-	var githubAccount models.GithubAccount
-	json.Unmarshal(responseBytes, &githubAccount)
+	githubAccount := providers.GetGithubByUsername(user.GithubUsername)
 
 	user.GithubAccount = githubAccount
 
